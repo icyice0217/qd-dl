@@ -61,7 +61,8 @@ namespace Bin.Qidian.Sdk.Utils
                 if (index2 > 0)
                 {
                     title = html.Substring(index + TITLE_BEGIN.Length, index2 - index - TITLE_BEGIN.Length);
-                    title = title.Replace("/", "");
+                    title = title.Replace("/", "_");
+                    title = title.Replace(":", "_");
                     LogOut("解析HTML... - 标题 - 成功");
                 }
             }
@@ -79,6 +80,7 @@ namespace Bin.Qidian.Sdk.Utils
                     if (string.IsNullOrEmpty(title))
                         title = DateTime.Now.ToString("yyyyMMddHHmmssfff") + "_" + new Random().Next(9999);
                     WriteFile($"{path}\\{title}.txt", content);
+                    WriteToOneFile($"{path}\\AllInOne.txt", title, content);
                     LogOut($"写入文件 - {title} - 成功");
                 }
             }
@@ -115,6 +117,20 @@ namespace Bin.Qidian.Sdk.Utils
             using (var sw = new StreamWriter(fs))
             {
                 sw.Write(text);
+            }
+        }
+
+        public static void WriteToOneFile(string path, string title, string text)
+        {
+            var file = path;
+
+            using (var fs = new FileStream(file, FileMode.Append))
+            using (var sw = new StreamWriter(fs))
+            {
+                sw.Write(title);
+                sw.Write("\r\n\r\n");
+                sw.Write(text);
+                sw.Write("\r\n");
             }
         }
 
